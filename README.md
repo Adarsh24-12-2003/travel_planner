@@ -1,4 +1,4 @@
-One travel project, four AI frameworks
+## One travel project, four AI frameworks
 
 A three-hour terminal workshop for absolute beginners. Learn LangChain, LangGraph, AutoGen and CrewAI using the same travel-planning problem. Each lesson is a short `.py` file with plain-English comments and function docstrings.
 
