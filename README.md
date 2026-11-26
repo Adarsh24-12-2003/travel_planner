@@ -6,19 +6,18 @@ A three-hour terminal workshop for absolute beginners. Learn LangChain, LangGrap
 
 The original kit used genuine LangGraph orchestration and LangChain model clients, but had no AutoGen or CrewAI examples. It also included two identical travel notebooks, a refactor notebook, random service failures, retry policies, multiple data models and a revision loop. That was too much for a first three-hour introduction.
 
-The replacement keeps the travel theme and rewrites the notebook concepts into simpler Python lessons. Original material is preserved in `legacy_archive/` for trainer reference; exclude that folder from student distribution. See [AUDIT.md](AUDIT.md) for the original findings and replacement mapping.
+The replacement keeps the travel theme and rewrites the notebook concepts into simpler Python lessons. Earlier notebooks and source files are preserved in `legacy_archive/` for reference; they are not needed to run the current lessons. See [AUDIT.md](AUDIT.md) for the original findings and replacement mapping.
 
 ## Setup: Windows PowerShell
 
-Use Python 3.12, the interpreter tested on this machine. Start in BIA:
+Use Python 3.12, the version tested for this workshop. Run these commands from the cloned repository root:
 
 ```powershell
-cd .\session18_practical_kit
-python -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-The trainer's project already has its own `.venv` and a local `.env` with the required key copied from BIA. For a new student machine:
+Create a local `.env` file and add your API key:
 
 ```powershell
 Copy-Item .env.example .env
@@ -31,14 +30,22 @@ Use the exact `.venv` Python below. Activation is optional, so PowerShell execut
 
 ## Run in order
 
+These examples use the same destination, duration and budget for a direct comparison:
+
 ```powershell
-.\.venv\Scripts\python.exe 01_langchain_plan.py --destination Goa --days 3 --budget 15000
-.\.venv\Scripts\python.exe 02_langgraph_workflow.py --destination Goa --days 3 --budget 15000 --offline
-.\.venv\Scripts\python.exe 02_langgraph_workflow.py --destination Goa --days 3 --budget 3000 --offline
-.\.venv\Scripts\python.exe 02_langgraph_workflow.py --destination Goa --days 3 --budget 15000
-.\.venv\Scripts\python.exe 03_autogen_team.py --destination Jaipur --days 2 --budget 10000
+.\.venv\Scripts\python.exe 01_langchain_plan.py --destination Kochi --days 2 --budget 10000
+.\.venv\Scripts\python.exe 02_langgraph_workflow.py --destination Kochi --days 2 --budget 10000 --offline
+.\.venv\Scripts\python.exe 03_autogen_team.py --destination Kochi --days 2 --budget 10000
 .\.venv\Scripts\python.exe 04_crewai_crew.py --destination Kochi --days 2 --budget 10000
 ```
+
+For LangGraph's budget-warning path, lower the budget below the sample estimate:
+
+```powershell
+.\.venv\Scripts\python.exe 02_langgraph_workflow.py --destination Kochi --days 2 --budget 4000 --offline
+```
+
+Remove `--offline` from the LangGraph command to use its AI writer instead of the fixed offline example.
 
 | File | Main concept | Visible result |
 |---|---|---|
@@ -52,18 +59,19 @@ Use the same input in all four for a direct comparison. These are alternative im
 
 ## Boundaries
 
-Inputs describe one traveller, 1?7 days and a positive integer INR budget. Budget covers local stay, food and activities; travel to/from the city is excluded. No bookings, dates, weather API, database, persistent memory, web search or UI are involved. All costs are teaching estimates. Only the graph applies a fixed INR 2,500/day rule. AI-written totals in other demos need human checking; a reviewer is another model call, not an accuracy guarantee.
+Inputs describe one traveller, 1-7 days and a positive integer INR budget. Budget covers local stay, food and activities; travel to/from the city is excluded. No bookings, dates, weather API, database, persistent memory, web search or UI are involved. All costs are teaching estimates. Only the graph applies a fixed INR 2,500/day rule. AI-written totals in other demos need human checking; a reviewer is another model call, not an accuracy guarantee.
 
 `--offline` works only in lesson 2. It executes real LangGraph and replaces only the AI writer with a fixed city-walk outline. Other demos need the API. LangChain makes one request; the graph makes zero or one; AutoGen has two agent turns. CrewAI normally uses one model response per task, but may make additional requests through its iteration/retry behavior.
 
 CrewAI may create internal bookkeeping files even with memory disabled. They are kept in the ignored local `.crewai/` folder. The application does not use them as conversation memory.
 
-## Guides and checks
+## Project documentation
 
-- [Trainer guide](trainer_guide.md): command-only quick start, example inputs, 180-minute timetable and demo cues.
-- [Student guide](student_guide.md): concepts, design, every script and every function explained. Read source comments alongside it for statement-by-statement help.
+- [Audit](AUDIT.md): original findings and replacement mapping.
 - [Design document](design_document.md): problem statement, HLD, LLD, flowcharts, interfaces and limitations.
 - [Validation](VALIDATION.md): actual verification results and live API status.
+
+Student and trainer guides are maintained separately and are not included in this repository.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip check
@@ -82,7 +90,7 @@ CrewAI may create internal bookkeeping files even with memory disabled. They are
 | Quota / 429 | Check API credit/rate limits; avoid repeatedly rerunning paid demos. |
 | Timeout / connection error | Check network access; use lesson 2 with `--offline` meanwhile. |
 | Unsupported model | Restore the tested default; other providers need code changes. |
-| Input error | Use a nonempty city, 1?7 days and positive integer budget. |
+| Input error | Use a nonempty city, 1-7 days and positive integer budget. |
 
 ## Official API references
 
